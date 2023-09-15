@@ -4,23 +4,25 @@ const {
   networkConfig,
 } = require("../helper-hardhat-config");
 const { TransactionReceipt } = require("ethers");
-const { verify } = require("../helper-hardhat-config");
+const { verify } = require("../utils/verify");
 
 const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2");
 
-module.exports = async function (getNamedAccounts, deployments) {
+module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = network.config.chainId;
-  let vrfCoordinatorV2Address, subscriptionId;
+  let vrfCoordinatorV2Address, subscriptionId, vrfCoordinatorV2Mock;
+
   if (developmentChains.includes(network.name)) {
-    const vrfCoordinatorV2Mock = await ethers.getContract(
-      "VRFCoordinatorV2Mock"
-    );
-    vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address;
+    vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
+    vrfCoordinatorV2Address = await vrfCoordinatorV2Mock.getAddress();
     const transactionResponse = await vrfCoordinatorV2Mock.createSubscription();
-    const transactionRecipt = await transactionResponse.wait(1);
-    subscriptionId = transactionReceipt.events[0].args.subId;
+    const transactionReceipt = await transactionResponse.wait();
+    console.log(transactionReceipt.logs[0].args.subId);
+    //console.log(transactionReceipt);
+
+    subscriptionId = transactionReceipt.logs[0].args.subId;
     await vrfCoordinatorV2Mock.fundSubscription(
       subscriptionId,
       VRF_SUB_FUND_AMOUNT
@@ -32,13 +34,13 @@ module.exports = async function (getNamedAccounts, deployments) {
 
   const entranceFee = networkConfig[chainId]["entranceFee"];
   const gasLane = networkConfig[chainId]["gasLane"];
-  const callbackGasLimit = network[chainId]["callbackGasLimit"];
-  const interval = network[chainId]["interval"];
+  const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"];
+  const interval = networkConfig[chainId]["interval"];
   const args = [
     vrfCoordinatorV2Address,
     entranceFee,
     gasLane,
-    subscriptionId.callbackGasLimit,
+    subscriptionId,
     callbackGasLimit,
     interval,
   ];

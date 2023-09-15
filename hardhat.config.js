@@ -5,6 +5,13 @@ require("solidity-coverage");
 require("hardhat-gas-reporter");
 require("hardhat-contract-sizer");
 require("dotenv").config();
+// require("@nomicfoundation/hardhat-toolbox");
+// require("@nomiclabs/hardhat-ethers");
+// require("hardhat-deploy");
+// require("solidity-coverage");
+// require("hardhat-gas-reporter");
+// require("hardhat-contract-sizer");
+// require("dotenv").config();
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
@@ -34,5 +41,12 @@ module.exports = {
     player: {
       default: 1,
     },
+  },
+  gasReporter: {
+    enabled: false,
+    outputFile: "gas-report.txt",
+    noColors: true,
+    currency: "USD",
+    //coinmarketcap: COINMARKETCAP_API_KEY,
   },
 };

@@ -19,7 +19,7 @@ error Raffle__NotOpen();
 error Raffle__UpkeepNotNeeded(
     uint256 currentBalance,
     uint256 numPlayers,
-    uint256 raffkeState
+    uint256 raffleState
 );
 
 /**
@@ -27,6 +27,7 @@ error Raffle__UpkeepNotNeeded(
  * @author Daniel Kim
  * @notice This contract is for creating an untargetable smart contract
  * @dev This implements Chainlink VRF v2 and Chainlink Automation
+ *
  */
 contract Raffle is VRFConsumerBaseV2, AutomationCompatible {
     /* Types */
@@ -96,6 +97,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatible {
         bytes memory /* checkData */
     )
         public
+        view
         override
         returns (bool upkeepNeeded, bytes memory /* performData */)
     {
@@ -175,5 +177,9 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatible {
 
     function getRequestConfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATIONS;
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
     }
 }
