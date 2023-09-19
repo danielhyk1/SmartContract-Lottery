@@ -1,1 +1,3 @@
-yarn add --dev @chainlink/contracts@0.4.1 // change dependency version back
+yarn add --dev @chainlink/contracts@0.4.1 // change dependency version backgit 
+
+todo: change ethers parse to ethers util parse 

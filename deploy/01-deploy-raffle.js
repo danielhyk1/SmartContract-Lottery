@@ -6,7 +6,7 @@ const {
 const { TransactionReceipt } = require("ethers");
 const { verify } = require("../utils/verify");
 
-const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2");
+const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2");
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
@@ -16,13 +16,13 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
   if (developmentChains.includes(network.name)) {
     vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
-    vrfCoordinatorV2Address = await vrfCoordinatorV2Mock.getAddress();
+    vrfCoordinatorV2Address = await vrfCoordinatorV2Mock.address;
     const transactionResponse = await vrfCoordinatorV2Mock.createSubscription();
     const transactionReceipt = await transactionResponse.wait();
-    console.log(transactionReceipt.logs[0].args.subId);
+    console.log(transactionReceipt.events[0].args.subId);
     //console.log(transactionReceipt);
 
-    subscriptionId = transactionReceipt.logs[0].args.subId;
+    subscriptionId = transactionReceipt.events[0].args.subId;
     await vrfCoordinatorV2Mock.fundSubscription(
       subscriptionId,
       VRF_SUB_FUND_AMOUNT

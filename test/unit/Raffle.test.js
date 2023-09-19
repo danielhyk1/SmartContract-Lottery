@@ -33,9 +33,9 @@ const { assert, expect } = require("chai");
 
       describe("enterRaffle", async function () {
         it("reverts when you don't pay enough", async function () {
-          await expect(raffle.enterRaffle()).to.be.revertedWithCustomError(
+          await expect(raffle.enterRaffle()).to.be.revertedWith(
             raffle,
-            "Raffle__NotEnoughETH"
+            "Raffle__NotEnoughETH()"
           );
         });
         it("records players when they enter", async function () {
